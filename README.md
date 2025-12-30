@@ -39,7 +39,7 @@ Spring Boot 4 のタスク管理およびナレッジ共有プラットフォー
 ### ER図
 ```mermaid
 erDiagram
-    tasks {
+    task {
         bigint id PK "Auto Increment"
         varchar title "NOT NULL"
         text description
@@ -58,7 +58,7 @@ sequenceDiagram
 
     User->>React: 表示
     React->>API: GET /api/tasks (JSON)
-    API->>DB: SELECT * FROM tasks...
+    API->>DB: SELECT * FROM task..
     DB-->>API: Success
     API-->>React: 200 OK
     React-->>User: 一覧を更新して表示
