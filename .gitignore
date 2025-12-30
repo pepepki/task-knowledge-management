@@ -16,3 +16,6 @@ frontend/.env.local
 # OS関連
 .DS_Store
 Thumbs.db
+
+# その他
+.env
