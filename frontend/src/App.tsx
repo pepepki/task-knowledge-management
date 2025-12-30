@@ -23,6 +23,24 @@ function App() {
     }
   }
 
+  const handleToggle = async (id: number) => {
+    try {
+      await axios.patch(`http://localhost:8080/api/tasks/${id}/toggle`);
+      fetchTasks(); // 一覧を再取得
+    } catch (error) {
+      console.error('Error toggling task:', error);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('本当に削除しますか？')) return;
+    try {
+      await axios.delete(`http://localhost:8080/api/tasks/${id}`);
+      fetchTasks(); // 一覧を再取得
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
+  };
   useEffect(() => {
     fetchTasks()
   }, [])
@@ -31,9 +49,9 @@ function App() {
     <div className="container">
       <header className="app-header">
         <h1>Task Management</h1>
-        <span className="badge">Sprint 2</span>
+        <span className="badge">Sprint 3</span>
       </header>
-      
+
       <TaskForm onTaskCreated={fetchTasks} />
 
       <section className="list-section">
@@ -52,16 +70,19 @@ function App() {
               {tasks.map(task => (
                 <tr key={task.id}>
                   <td>{task.id}</td>
-                  <td className="task-title">{task.title}</td>
+                  <td className={task.status === 'DONE' ? 'strikethrough' : ''}>{task.title}</td>
                   <td>{task.description}</td>
                   <td>
-                    <span className={`status-tag ${task.status.toLowerCase()}`}>
-                      {task.status}
-                    </span>
+                    <span className={`status-tag ${task.status.toLowerCase()}`}>{task.status}</span>
+                  </td>
+                  <td>
+                    <button onClick={() => handleToggle(task.id)} className="action-button">
+                      {task.status === 'DONE' ? '戻す' : '完了'}
+                    </button>
+                    <button onClick={() => handleDelete(task.id)} className="delete-button">削除</button>
                   </td>
                 </tr>
-              ))}
-            </tbody>
+              ))}            </tbody>
           </table>
         </div>
       </section>

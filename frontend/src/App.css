@@ -144,3 +144,33 @@
 .submit-button:hover {
   background-color: #0056b3;
 }
+
+/* 完了したタスクの打ち消し線 */
+.strikethrough {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.action-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.status-tag.done {
+  background-color: #d4edda;
+  color: #155724;
+}
