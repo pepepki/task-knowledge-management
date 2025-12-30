@@ -1,13 +1,20 @@
 # Task & Knowledge Management App
 
 Spring Boot 4 のタスク管理およびナレッジ共有プラットフォームです。
-現在は **Sprint 1 (垂直貫通の開通)** ステップです。
+現在は **Sprint 2 (タスク登録機能の実装とUI/テストの刷新)** ステップです。
 
-## 🚀 プロジェクトの現状: Sprint 1 完了
+## 🚀 プロジェクトの現状: Sprint 2 完了　タスク登録機能の実装とUI/テストの刷新
+### Sprint 1
 - **インフラ:** Docker Compose による全環境（DB/Backend/Frontend）のコンテナ化
 - **DB:** MySQL 8.0 の構築と初期データの疎通
 - **Backend:** Spring Boot 4 (Java 25) による REST API の実装（一覧取得機能）
 - **Frontend:** React (Vite + TypeScript) による API 連携とデータ表示
+
+### Sprint 2
+- **Backend:** 登録機能の実装とserviceレイヤーでのトランザクション機構実装
+- **Frontend:** 登録機能の実装。デザイン性の向上
+- **Backend/Frontend:** Unitテストの実装
+
 
 ## 🛠 利用技術
 ### Backend
@@ -34,7 +41,7 @@ Spring Boot 4 のタスク管理およびナレッジ共有プラットフォー
   - DB_PASSWORD=パスワード となる`.env` ファイルをプロジェクト直下に作成してください。
 - 各コンテナの設定は `docker-compose.yml` を通じて `.env` から注入されます。
 
-## 📊 設計図 (Sprint 1 時点)
+## 📊 設計図 (Sprint 2 時点)
 
 ### ER図
 ```mermaid
@@ -51,18 +58,21 @@ erDiagram
 ### シーケンス図
 ```mermaid
 sequenceDiagram
-    participant User
-    participant React
-    participant API
-    participant DB
+    participant User as ユーザー
+    participant React as React (TaskForm)
+    participant Service as Spring Boot (Service)
+    participant DB as MySQL
 
-    User->>React: 表示
-    React->>API: GET /api/tasks (JSON)
-    API->>DB: SELECT * FROM task..
-    DB-->>API: Success
-    API-->>React: 200 OK
-    React-->>User: 一覧を更新して表示
-
+    User->>React: タイトルと説明を入力して「保存」
+    React->>React: useStateで状態管理
+    React->>Service: POST /api/tasks (JSON: TaskRequest record)
+    Note right of Service: @Transactional開始
+    Service->>DB: INSERT INTO tasks
+    DB-->>Service: 保存完了
+    Service-->>React: 200 OK (Task entity)
+    Note right of Service: @Transactional終了
+    React->>React: 一覧を再取得 (fetchTasks)
+    React-->>User: テーブルに新しいタスクが表示される
 ```
 
 ## 各サービスへのアクセス
