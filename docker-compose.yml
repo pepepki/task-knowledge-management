@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # MySQLの設定
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: task_db
+      MYSQL_ROOT_PASSWORD:  ${DB_PASSWORD}
+      MYSQL_USER: user
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    healthcheck: # 
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    links:
+      - db
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: password
+
+  # backend
+  backend:
+    build: ./backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/task_db?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD} 
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # frontend
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app         # ローカルでの編集をリアルタイムに反映（ホットリロード）
+      - /app/node_modules        # コンテナ内のライブラリを優先
+    depends_on:
+      - backend

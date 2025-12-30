@@ -1,0 +1,18 @@
+# DBのデータ（Dockerが生成したもの）
+mysql_data/
+
+# Backend (Java/Maven)
+backend/target/
+backend/.ipynb_checkpoints/
+backend/.classpath
+backend/.project
+backend/.settings/
+
+# Frontend (Node/React)
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+
+# OS関連
+.DS_Store
+Thumbs.db
