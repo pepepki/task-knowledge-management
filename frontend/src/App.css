@@ -1,42 +1,146 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* レイアウト全体の調整 */
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+  color: #333;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.badge {
+  background: #eef2f7;
+  color: #5d6d7e;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* テーブルのデザイン */
+.table-wrapper {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border: 1px solid #eee;
 }
 
-.card {
-  padding: 2em;
+.task-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
 }
 
-.read-the-docs {
-  color: #888;
+.task-table th {
+  background-color: #f8f9fa;
+  padding: 15px;
+  font-size: 0.9rem;
+  color: #666;
+  border-bottom: 2px solid #eee;
+}
+
+.task-table td {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+/* ホバー時に行の色を変える */
+.task-table tbody tr:hover {
+  background-color: #fcfcfc;
+}
+
+.task-title {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+/* ステータスタグの装飾 */
+.status-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-tag.todo {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+/* フォームカードのデザイン */
+.task-form-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 40px;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.form-title {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  color: #2c3e50;
+  border-left: 4px solid #007bff;
+  padding-left: 12px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.form-group input, 
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus, 
+.form-group textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.form-actions {
+  text-align: right;
+}
+
+.submit-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
 }

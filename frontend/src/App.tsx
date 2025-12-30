@@ -1,45 +1,70 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import TaskForm from './components/TaskForm'
+import './App.css'
 
-// データの型を定義（TypeScript）
 interface Task {
-  id: number;
-  title: string;
-  description: string;
-  status: string;
+  id: number
+  title: string
+  description: string
+  status: string
 }
 
 function App() {
-  const [tasks, setTasks] = useState<Task[]>([]); // タスクを保存する変数
-  const [loading, setLoading] = useState(true);   // 読み込み中フラグ
+  const [tasks, setTasks] = useState<Task[]>([])
+
+  // タスク一覧を取得する関数
+  const fetchTasks = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/tasks')
+      setTasks(response.data)
+    } catch (error) {
+      console.error('Error fetching tasks:', error)
+    }
+  }
 
   useEffect(() => {
-    // 画面が開いたときにバックエンドからデータを取得
-    axios.get('http://localhost:8080/api/tasks')
-      .then(response => {
-        setTasks(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error("エラーが発生しました:", error);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) return <div>読み込み中...</div>;
+    fetchTasks()
+  }, [])
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>タスク一覧 (Sprint 1)</h1>
-      <ul>
-        {tasks.map(task => (
-          <li key={task.id} style={{ marginBottom: '10px', borderBottom: '1px solid #ccc' }}>
-            <h3>{task.title}</h3>
-            <p>{task.description}</p>
-            <span>状態: <b>{task.status}</b></span>
-          </li>
-        ))}
-      </ul>
+    <div className="container">
+      <header className="app-header">
+        <h1>Task Management</h1>
+        <span className="badge">Sprint 2</span>
+      </header>
+      
+      <TaskForm onTaskCreated={fetchTasks} />
+
+      <section className="list-section">
+        <h2>タスク一覧</h2>
+        <div className="table-wrapper">
+          <table className="task-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>タイトル</th>
+                <th>説明</th>
+                <th>ステータス</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tasks.map(task => (
+                <tr key={task.id}>
+                  <td>{task.id}</td>
+                  <td className="task-title">{task.title}</td>
+                  <td>{task.description}</td>
+                  <td>
+                    <span className={`status-tag ${task.status.toLowerCase()}`}>
+                      {task.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
   )
 }
