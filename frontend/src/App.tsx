@@ -41,9 +41,17 @@ function App() {
       console.error('Error deleting task:', error);
     }
   };
+
+  // axiosのデフォルト設定に認証情報を含める
+  axios.defaults.withCredentials = true;
+
+  // Basic認証用のヘッダーを一時的に追加（開発用テスト）
+  axios.defaults.headers.common['Authorization'] = 'Basic ' + btoa('user:password');
+
   useEffect(() => {
     fetchTasks()
   }, [])
+
 
   return (
     <div className="container">
