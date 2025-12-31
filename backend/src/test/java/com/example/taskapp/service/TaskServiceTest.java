@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import com.example.taskapp.dto.TaskRequest;
 import com.example.taskapp.entity.Task;
 import com.example.taskapp.repository.TaskRepository;
@@ -14,6 +13,7 @@ import com.example.taskapp.repository.TaskRepository;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -74,4 +74,16 @@ class TaskServiceTest {
         // Then
         verify(taskRepository, times(1)).deleteById(1L);
     }
+
+    @Test
+    @DisplayName("存在しないタスクを削除しようとした場合に例外が発生すること")
+    void deleteTask_ThrowsException_WhenNotFound() {
+        // Arrange
+        Long taskId = 99L;
+        doThrow(new RuntimeException("Task not found")).when(taskRepository).deleteById(taskId);
+
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> taskService.deleteTask(taskId));
+    }
+
 }

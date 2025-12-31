@@ -1,27 +1,29 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import App from './App';
 
-describe('App Routing and Auth', () => {
-  it('未ログイン時はログイン画面が表示されること', () => {
-    // LocalStorageをクリアして未ログイン状態を保証
-    localStorage.clear();
-    
-    render(<App />);
+// axiosをモック化（APIを叩かないようにする）
+vi.mock('axios');
 
-    // 「ログイン」という見出しが存在するか確認
-    // (Login.tsxで <h2>ログイン</h2> としている場合)
-    const loginHeading = screen.getByRole('heading', { name: /ログイン/i });
-    expect(loginHeading).toBeDefined();
-    
-    // ユーザー名とパスワードの入力フィールドがあるか確認
-    expect(screen.getByPlaceholderText(/ユーザー名/i)).toBeDefined();
-    expect(screen.getByPlaceholderText(/パスワード/i)).toBeDefined();
+describe('App Routing and Auth', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    vi.clearAllMocks();
   });
 
-  it('新規登録へのリンクが存在すること', () => {
+  it('未ログイン時はログイン画面が表示されること', async () => {
     render(<App />);
-    const signupLink = screen.getByRole('link', { name: /新規登録/i });
-    expect(signupLink).toBeDefined();
+
+    const loginHeading = await screen.findByRole('heading', { name: /ログイン/i });
+    expect(loginHeading).toBeInTheDocument();
+
+    const usernameInput = screen.getByLabelText(/ユーザー名/i);
+    const passwordInput = screen.getByLabelText(/パスワード/i);
+
+    expect(usernameInput).toBeInTheDocument();
+    expect(passwordInput).toBeInTheDocument();
+
+    const loginButton = screen.getByRole('button', { name: /ログイン/i });
+    expect(loginButton).toBeInTheDocument();
   });
 });

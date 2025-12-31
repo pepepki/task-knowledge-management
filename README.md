@@ -1,24 +1,7 @@
 # Task & Knowledge Management App
 
 Spring Boot 4 のタスク管理およびナレッジ共有プラットフォームです。
-現在は **Sprint 3 (タスクの更新・削除機能)** ステップです。
-
-## 🚀 プロジェクトの現状: Sprint 3 完了　タスクの更新・削除機能の実装
-### Sprint 1
-- **インフラ:** Docker Compose による全環境（DB/Backend/Frontend）のコンテナ化
-- **DB:** MySQL 8.0 の構築と初期データの疎通
-- **Backend:** Spring Boot 4 (Java 25) による REST API の実装（一覧取得機能）
-- **Frontend:** React (Vite + TypeScript) による API 連携とデータ表示
-
-### Sprint 2
-- **Backend:** 登録機能の実装とserviceレイヤーでのトランザクション機構実装
-- **Frontend:** 登録機能の実装。デザイン性の向上
-- **Backend/Frontend:** Unitテストの実装
-
-### Sprint 3
-- **Backend:** 編集・削除機能の実装
-- **Frontend:** 編集・削除機能の実装
-
+現在は **Sprint 4 (ユーザー認証機能の実装)** ステップです。
 
 ## 🛠 利用技術
 ### Backend
@@ -50,13 +33,21 @@ Spring Boot 4 のタスク管理およびナレッジ共有プラットフォー
 ### ER図
 ```mermaid
 erDiagram
-    task {
-        bigint id PK "Auto Increment"
-        varchar title "NOT NULL"
-        text description
-        varchar status "DEFAULT 'TODO'"
+    USER ||--o{ TASK : "manages"
+    
+    USER {
+        bigint id PK "自動採番"
+        string username "ユーザー名（ユニーク）"
+        string password "ハッシュ化されたパスワード"
     }
 
+    TASK {
+        bigint id PK "自動採番"
+        string title "タスク名"
+        string description "詳細説明"
+        string status "TODO / DONE"
+        bigint user_id FK "作成者ID"
+    }
 ```
 
 ### シーケンス図
@@ -96,6 +87,14 @@ sequenceDiagram
     API-->>React: 200 OK
     end
 
+    Note over User, DB: 【Sprint 4: 認証基盤】
+    User->>FE: サインアップ/ログイン
+    FE->>BE: APIリクエスト (POST /api/auth/signup)
+    BE->>DB: ユーザー情報を保存
+    DB-->>BE: 成功
+    BE-->>FE: 201 Created
+    end
+
     Note right of API: ID不在時は ResourceNotFoundException (404) を返却
 ```
 
@@ -103,3 +102,23 @@ sequenceDiagram
 - Frontend (React): http://localhost:5173
 - Backend API: http://localhost:8080/api/tasks
 - phpMyAdmin (DB管理): http://localhost:8081
+
+## 🚀 プロジェクトの現状: Sprint 4 完了　ユーザー認証機能の実装
+### Sprint 1
+- **インフラ:** Docker Compose による全環境（DB/Backend/Frontend）のコンテナ化
+- **DB:** MySQL 8.0 の構築と初期データの疎通
+- **Backend:** Spring Boot 4 (Java 25) による REST API の実装（一覧取得機能）
+- **Frontend:** React (Vite + TypeScript) による API 連携とデータ表示
+
+### Sprint 2
+- **Backend:** 登録機能の実装とserviceレイヤーでのトランザクション機構実装
+- **Frontend:** 登録機能の実装。デザイン性の向上
+- **Backend/Frontend:** Unitテストの実装
+
+### Sprint 3
+- **Backend:** 編集・削除機能の実装
+- **Frontend:** 編集・削除機能の実装
+
+### Sprint 4
+- **Backend:** Spring Securityによる認証機能実装(簡易的にBasic認証)
+- **Frontend:** ユーザー登録、ログイン機能実装　※まだタスクとの関連付けは未実装
