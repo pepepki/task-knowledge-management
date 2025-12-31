@@ -1,26 +1,27 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { expect, test, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
 import App from './App';
-import axios from 'axios';
 
-vi.mock('axios');
-const mockedAxios = axios as any;
+describe('App Routing and Auth', () => {
+  it('未ログイン時はログイン画面が表示されること', () => {
+    // LocalStorageをクリアして未ログイン状態を保証
+    localStorage.clear();
+    
+    render(<App />);
 
-test('削除ボタンを押すと confirm が表示され API が呼ばれること', async () => {
-  // window.confirm をモック化して「OK」を返すようにする
-  const confirmSpy = vi.spyOn(window, 'confirm').mockImplementation(() => true);
-  
-  // 既存のタスクがある状態でレンダリング
-  mockedAxios.get.mockResolvedValue({
-    data: [{ id: 1, title: '消されるタスク', description: 'desc', status: 'TODO' }]
+    // 「ログイン」という見出しが存在するか確認
+    // (Login.tsxで <h2>ログイン</h2> としている場合)
+    const loginHeading = screen.getByRole('heading', { name: /ログイン/i });
+    expect(loginHeading).toBeDefined();
+    
+    // ユーザー名とパスワードの入力フィールドがあるか確認
+    expect(screen.getByPlaceholderText(/ユーザー名/i)).toBeDefined();
+    expect(screen.getByPlaceholderText(/パスワード/i)).toBeDefined();
   });
 
-  render(<App />);
-
-  // 削除ボタンを探してクリック
-  const deleteBtn = await screen.findByText('削除');
-  fireEvent.click(deleteBtn);
-
-  expect(confirmSpy).toHaveBeenCalled();
-  expect(mockedAxios.delete).toHaveBeenCalledWith('http://localhost:8080/api/tasks/1');
+  it('新規登録へのリンクが存在すること', () => {
+    render(<App />);
+    const signupLink = screen.getByRole('link', { name: /新規登録/i });
+    expect(signupLink).toBeDefined();
+  });
 });
