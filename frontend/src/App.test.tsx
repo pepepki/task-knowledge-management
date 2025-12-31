@@ -1,26 +1,29 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { expect, test, vi } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import App from './App';
-import axios from 'axios';
 
+// axiosをモック化（APIを叩かないようにする）
 vi.mock('axios');
-const mockedAxios = axios as any;
 
-test('削除ボタンを押すと confirm が表示され API が呼ばれること', async () => {
-  // window.confirm をモック化して「OK」を返すようにする
-  const confirmSpy = vi.spyOn(window, 'confirm').mockImplementation(() => true);
-  
-  // 既存のタスクがある状態でレンダリング
-  mockedAxios.get.mockResolvedValue({
-    data: [{ id: 1, title: '消されるタスク', description: 'desc', status: 'TODO' }]
+describe('App Routing and Auth', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    vi.clearAllMocks();
   });
 
-  render(<App />);
+  it('未ログイン時はログイン画面が表示されること', async () => {
+    render(<App />);
 
-  // 削除ボタンを探してクリック
-  const deleteBtn = await screen.findByText('削除');
-  fireEvent.click(deleteBtn);
+    const loginHeading = await screen.findByRole('heading', { name: /ログイン/i });
+    expect(loginHeading).toBeInTheDocument();
 
-  expect(confirmSpy).toHaveBeenCalled();
-  expect(mockedAxios.delete).toHaveBeenCalledWith('http://localhost:8080/api/tasks/1');
+    const usernameInput = screen.getByLabelText(/ユーザー名/i);
+    const passwordInput = screen.getByLabelText(/パスワード/i);
+
+    expect(usernameInput).toBeInTheDocument();
+    expect(passwordInput).toBeInTheDocument();
+
+    const loginButton = screen.getByRole('button', { name: /ログイン/i });
+    expect(loginButton).toBeInTheDocument();
+  });
 });

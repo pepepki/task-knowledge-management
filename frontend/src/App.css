@@ -174,3 +174,76 @@
   background-color: #d4edda;
   color: #155724;
 }
+
+.strikethrough { text-decoration: line-through; color: #888; }
+.status-badge.done { color: green; font-weight: bold; }
+.status-badge.todo { color: orange; font-weight: bold; }
+.task-done { background-color: #f9f9f9; }
+.delete-button { background-color: #ff4d4d; color: white; border: none; padding: 5px; cursor: pointer; }
+
+/* frontend/src/App.css */
+
+/* 画面中央に配置するコンテナ */
+.auth-container {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 40px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.auth-container h2 {
+  margin-bottom: 24px;
+  color: #333;
+}
+
+/* フォームのレイアウト */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+/* ボタンのスタイル */
+.auth-container button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.auth-container button:hover {
+  background-color: #0056b3;
+}
+
+/* フッター（リンクなど） */
+.auth-footer {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.auth-footer a {
+  color: #007bff;
+  text-decoration: none;
+}
