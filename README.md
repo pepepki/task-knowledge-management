@@ -96,6 +96,7 @@ sequenceDiagram
     end
 
     Note right of API: ID不在時は ResourceNotFoundException (404) を返却
+
 ```
 
 ## 各サービスへのアクセス
