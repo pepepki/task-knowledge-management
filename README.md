@@ -70,6 +70,7 @@ stateDiagram-v2
 ```
 
 ### シーケンス図
+```mermaid
 sequenceDiagram
     autonumber
     actor User as ユーザー
@@ -106,6 +107,8 @@ sequenceDiagram
         Service-->>Front: 403 Forbidden (AccessDeniedException)
         Front-->>User: 「権限がありません」と表示
     end
+
+```
 
 ## 各サービスへのアクセス
 - Frontend (React): http://localhost:5173
