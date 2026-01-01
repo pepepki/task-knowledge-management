@@ -1,249 +1,139 @@
-/* レイアウト全体の調整 */
-.container {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 0 20px;
+/* --- 全体共通設定 --- */
+body {
+  margin: 0;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f4f7f6;
   color: #333;
 }
 
-.app-header {
+/* --- ログイン・新規登録画面 (AuthPage) --- */
+.auth-page {
   display: flex;
+  justify-content: center;
   align-items: center;
+  min-height: 100vh;
+}
+
+.auth-card {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+.auth-card h1, .auth-card h2 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column; /* ログイン画面は縦並び */
   gap: 15px;
-  margin-bottom: 30px;
 }
 
-.badge {
-  background: #eef2f7;
-  color: #5d6d7e;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.85rem;
+.auth-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   font-weight: bold;
 }
 
-/* テーブルのデザイン */
-.table-wrapper {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
-  border: 1px solid #eee;
-}
-
-.task-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.task-table th {
-  background-color: #f8f9fa;
-  padding: 15px;
-  font-size: 0.9rem;
-  color: #666;
-  border-bottom: 2px solid #eee;
-}
-
-.task-table td {
-  padding: 15px;
-  border-bottom: 1px solid #eee;
-  font-size: 0.95rem;
-  vertical-align: middle;
-}
-
-/* ホバー時に行の色を変える */
-.task-table tbody tr:hover {
-  background-color: #fcfcfc;
-}
-
-.task-title {
-  font-weight: 600;
-  color: #2c3e50;
-}
-
-/* ステータスタグの装飾 */
-.status-tag {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.status-tag.todo {
-  background-color: #d1ecf1;
-  color: #0c5460;
-}
-
-/* フォームカードのデザイン */
-.task-form-card {
-  background: white;
-  border-radius: 12px;
-  padding: 25px;
-  margin-bottom: 40px;
-  border: 1px solid #eee;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.form-title {
-  margin-top: 0;
-  margin-bottom: 20px;
-  font-size: 1.2rem;
-  color: #2c3e50;
-  border-left: 4px solid #007bff;
-  padding-left: 12px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: #666;
-}
-
-.form-group input, 
-.form-group textarea {
-  width: 100%;
-  padding: 10px 12px;
+.auth-card input {
+  padding: 12px;
   border: 1px solid #ddd;
   border-radius: 6px;
-  font-size: 1rem;
-  box-sizing: border-box;
-  transition: border-color 0.2s;
+  font-size: 16px;
 }
 
-.form-group input:focus, 
-.form-group textarea:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-.form-actions {
-  text-align: right;
-}
-
-.submit-button {
+.auth-card button {
+  padding: 12px;
   background-color: #007bff;
   color: white;
   border: none;
-  padding: 12px 24px;
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.2s;
+  margin-top: 10px;
 }
 
-.submit-button:hover {
-  background-color: #0056b3;
+.auth-card .link-text {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
 }
 
-/* 完了したタスクの打ち消し線 */
+/* --- タスク一覧画面 (TaskListPage) --- */
+main.task-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.task-form form {
+  display: flex; /* タスク追加は横並び */
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.task-form input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.task-form button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* テーブルスタイル */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th {
+  background-color: #f8f9fa;
+  padding: 12px;
+  text-align: left;
+  border-bottom: 2px solid #dee2e6;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
 .strikethrough {
   text-decoration: line-through;
   color: #888;
 }
 
-.action-button {
-  background-color: #28a745;
-  color: white;
-  border: none;
+/* 操作ボタン */
+.delete-btn {
+  color: #dc3545;
+  background: none;
+  border: 1px solid #dc3545;
   padding: 5px 10px;
   border-radius: 4px;
   cursor: pointer;
-  margin-right: 5px;
+  margin-left: 5px;
 }
 
-.delete-button {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.status-tag.done {
-  background-color: #d4edda;
-  color: #155724;
-}
-
-.strikethrough { text-decoration: line-through; color: #888; }
-.status-badge.done { color: green; font-weight: bold; }
-.status-badge.todo { color: orange; font-weight: bold; }
-.task-done { background-color: #f9f9f9; }
-.delete-button { background-color: #ff4d4d; color: white; border: none; padding: 5px; cursor: pointer; }
-
-/* frontend/src/App.css */
-
-/* 画面中央に配置するコンテナ */
-.auth-container {
-  max-width: 400px;
-  margin: 100px auto;
-  padding: 40px;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-.auth-container h2 {
-  margin-bottom: 24px;
-  color: #333;
-}
-
-/* フォームのレイアウト */
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.form-group {
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-group input {
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-/* ボタンのスタイル */
-.auth-container button {
-  width: 100%;
-  padding: 12px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.auth-container button:hover {
-  background-color: #0056b3;
-}
-
-/* フッター（リンクなど） */
-.auth-footer {
-  margin-top: 20px;
-  font-size: 14px;
-}
-
-.auth-footer a {
-  color: #007bff;
-  text-decoration: none;
+.logout-container {
+  text-align: right;
 }

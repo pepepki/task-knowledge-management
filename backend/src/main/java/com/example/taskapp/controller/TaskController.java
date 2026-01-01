@@ -1,5 +1,6 @@
 package com.example.taskapp.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.taskapp.dto.TaskRequest;
 import com.example.taskapp.entity.Task;
+import com.example.taskapp.entity.User;
 import com.example.taskapp.service.TaskService;
 
 import lombok.RequiredArgsConstructor;
@@ -32,42 +34,46 @@ public class TaskController {
     /**
      * タスクをすべて取得する
      * 
+     * @param principal
      * @return タスクのリスト
      */
     @GetMapping
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
+    public List<Task> getAllTasks(Principal principal) {
+        return taskService.getTasksByUsername(principal.getName());
     }
 
     /**
      * タスクを作成する
      * 
-     * @param request
+     * @param task
+     * @param principal
      * @return タスク
      */
     @PostMapping
-    public Task createTask(@RequestBody TaskRequest request) {
-        return taskService.createTask(request);
+    public Task createTask(@RequestBody Task task, Principal principal) {
+        return taskService.createTaskWithUsername(task, principal.getName());
     }
 
     /**
      * タスクを更新する
      * 
      * @param id
+     * @param principal
      * @return タスク
      */
     @PatchMapping("/{id}/toggle")
-    public Task toggleTask(@PathVariable Long id) {
-        return taskService.toggleTaskStatus(id);
+    public void toggleTask(@PathVariable Long id, Principal principal) {
+        taskService.toggleTaskStatus(id, principal.getName());
     }
 
     /**
      * タスクを削除する
      * 
      * @param id
+     * @param principal
      */
     @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable Long id) {
-        taskService.deleteTask(id);
+    public void deleteTask(@PathVariable Long id, Principal principal) {
+        taskService.deleteById(id, principal.getName());
     }
 }

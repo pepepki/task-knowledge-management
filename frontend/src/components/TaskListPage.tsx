@@ -63,7 +63,7 @@ export const TaskListPage = () => {
             <tr><th>ID</th><th>タイトル</th><th>状態</th><th>操作</th></tr>
           </thead>
           <tbody>
-            {tasks.map(task => (
+            {Array.isArray(tasks) && tasks.map(task => (
               <tr key={task.id}>
                 <td>{task.id}</td>
                 <td className={task.status === 'DONE' ? 'strikethrough' : ''}>{task.title}</td>

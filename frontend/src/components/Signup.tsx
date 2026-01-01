@@ -20,33 +20,35 @@ export const Signup = () => {
   };
 
   return (
-    <div className="auth-container">
-      <h2>ユーザー登録</h2>
-      <form onSubmit={handleSignup} className="auth-form">
-        <div className="form-group">
-          <label>ユーザー名</label>
-          <input 
-            type="text" 
-            value={username} 
-            onChange={(e) => setUsername(e.target.value)} 
-            placeholder="ユーザー名を入力"
-            required 
-          />
+    <div className="auth-page">
+      <div className="auth-card">
+        <h2>ユーザー登録</h2>
+        <form onSubmit={handleSignup} className="auth-form">
+          <div className="form-group">
+            <label>ユーザー名</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="ユーザー名を入力"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>パスワード</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="パスワードを入力"
+              required
+            />
+          </div>
+          <button type="submit">アカウント作成</button>
+        </form>
+        <div className="auth-footer">
+          <p>すでにアカウントをお持ちですか？ <Link to="/login">ログイン</Link></p>
         </div>
-        <div className="form-group">
-          <label>パスワード</label>
-          <input 
-            type="password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            placeholder="パスワードを入力"
-            required 
-          />
-        </div>
-        <button type="submit">アカウント作成</button>
-      </form>
-      <div className="auth-footer">
-        <p>すでにアカウントをお持ちですか？ <Link to="/login">ログイン</Link></p>
       </div>
     </div>
   );

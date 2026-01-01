@@ -37,33 +37,35 @@ export const Login = (props: LoginProps) => {
     };
 
     return (
-        <div className="auth-container">
-            <h2>ログイン</h2>
-            <form onSubmit={handleLogin} className="auth-form">
-                <div className="form-group">
-                    <label htmlFor="username">ユーザー名</label>
-                    <input
-                        id="username"
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
+        <div className="auth-page">
+            <div className="auth-card">
+                <h2>ログイン</h2>
+                <form onSubmit={handleLogin} className="auth-form">
+                    <div className="form-group">
+                        <label htmlFor="username">ユーザー名</label>
+                        <input
+                            id="username"
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="username">パスワード</label>
+                        <input
+                            id="password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="login-button">ログイン</button>
+                </form>
+                <div className="auth-footer">
+                    <p>アカウントをお持ちでないですか？ <Link to="/signup">新規登録</Link></p>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="username">パスワード</label>
-                    <input
-                        id="password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit" className="login-button">ログイン</button>
-            </form>
-            <div className="auth-footer">
-                <p>アカウントをお持ちでないですか？ <Link to="/signup">新規登録</Link></p>
             </div>
         </div>
     );
