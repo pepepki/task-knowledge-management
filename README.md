@@ -94,7 +94,7 @@ stateDiagram-v2
 - **Backend:** Spring Securityによる認証機能実装(簡易的にBasic認証)
 - **Frontend:** ユーザー登録、ログイン機能実装　※まだタスクとの関連付けは未実装
 
-### Sprint 5(予定)　ユーザーに応じたタスクの表示
+### Sprint 5
 - **Backend:** ユーザー別にタスクのCRUDを行うように実装
 
 ### Sprint 6(予定)　他ユーザーへのタスクのアサイン
