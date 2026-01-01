@@ -69,6 +69,44 @@ stateDiagram-v2
 
 ```
 
+### シーケンス図
+sequenceDiagram
+    autonumber
+    actor User as ユーザー
+    participant Front as フロントエンド (React)
+    participant Auth as 認証フィルタ (Spring Security)
+    participant Service as TaskService
+    participant DB as データベース (MySQL)
+
+    Note over User, DB: 【タスク一覧の表示】
+    User->>Front: ページにアクセス
+    Front->>Auth: GET /api/tasks (Basic認証情報)
+    Auth->>Auth: ユーザーを特定 (Principal)
+    Auth->>Service: getTasksByUsername(username)
+    Service->>DB: findByUser(user)
+    DB-->>Service: そのユーザーのタスクのみ返却
+    Service-->>Front: JSON形式のリスト
+    Front-->>User: テーブル形式で表示
+
+    Note over User, DB: 【ステータス更新 (ガード処理あり)】
+    User->>Front: 「完了」ボタンをクリック
+    Front->>Auth: PATCH /api/tasks/{id}/toggle
+    Auth->>Auth: ユーザーを特定 (Principal)
+    Auth->>Service: toggleTaskStatus(id, username)
+    
+    Service->>DB: findById(id)
+    DB-->>Service: Task情報 (所有者を含む)
+    
+    alt 所有者が一致する場合
+        Service->>DB: save(更新されたTask)
+        DB-->>Service: 成功
+        Service-->>Front: 200 OK
+        Front-->>User: 打ち消し線を表示
+    else 所有者が一致しない場合 (不正アクセス)
+        Service-->>Front: 403 Forbidden (AccessDeniedException)
+        Front-->>User: 「権限がありません」と表示
+    end
+
 ## 各サービスへのアクセス
 - Frontend (React): http://localhost:5173
 - Backend API: http://localhost:8080/api/tasks
