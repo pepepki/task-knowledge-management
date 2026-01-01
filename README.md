@@ -28,7 +28,7 @@ Spring Boot 4 のタスク管理およびナレッジ共有プラットフォー
   - DB_PASSWORD=パスワード となる`.env` ファイルをプロジェクト直下に作成してください。
 - 各コンテナの設定は `docker-compose.yml` を通じて `.env` から注入されます。
 
-## 📊 設計図 (Sprint 3 時点)
+## 📊 設計図 (Sprint 4 時点)
 
 ### ER図
 ```mermaid
@@ -93,3 +93,7 @@ stateDiagram-v2
 ### Sprint 4
 - **Backend:** Spring Securityによる認証機能実装(簡易的にBasic認証)
 - **Frontend:** ユーザー登録、ログイン機能実装　※まだタスクとの関連付けは未実装
+
+### Sprint 5(予定)　ユーザーに応じたタスクの表示
+### Sprint 6(予定)　他ユーザーへのタスクのアサイン
+### Sprint 7(予定)　タスク期限日の設定
