@@ -74,7 +74,7 @@ stateDiagram-v2
 - Backend API: http://localhost:8080/api/tasks
 - phpMyAdmin (DB管理): http://localhost:8081
 
-## 🚀 プロジェクトの現状: Sprint 4 完了　ユーザー認証機能の実装
+## 🚀 プロジェクトの現状: Sprint 5 完了　ユーザー別にタスクのCRUDを行うように実装
 ### Sprint 1
 - **インフラ:** Docker Compose による全環境（DB/Backend/Frontend）のコンテナ化
 - **DB:** MySQL 8.0 の構築と初期データの疎通
