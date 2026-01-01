@@ -1,7 +1,7 @@
 # Task & Knowledge Management App
 
 Spring Boot 4 のタスク管理およびナレッジ共有プラットフォームです。
-現在は **Sprint 4 (ユーザー認証機能の実装)** ステップです。
+現在は **Sprint 5 (ユーザーに応じたタスクの表示)** ステップです。
 
 ## 🛠 利用技術
 ### Backend
@@ -28,7 +28,7 @@ Spring Boot 4 のタスク管理およびナレッジ共有プラットフォー
   - DB_PASSWORD=パスワード となる`.env` ファイルをプロジェクト直下に作成してください。
 - 各コンテナの設定は `docker-compose.yml` を通じて `.env` から注入されます。
 
-## 📊 設計図 (Sprint 4 時点)
+## 📊 設計図 (Sprint 5 時点)
 
 ### ER図
 ```mermaid
@@ -36,17 +36,17 @@ erDiagram
     USER ||--o{ TASK : "manages"
     
     USER {
-        bigint id PK "自動採番"
-        string username "ユーザー名（ユニーク）"
-        string password "ハッシュ化されたパスワード"
+        bigint id PK "自動採番 (BIGINT)"
+        string username "ユニーク制約 / NotNull"
+        string password "NotNull"
     }
 
     TASK {
-        bigint id PK "自動採番"
-        string title "タスク名"
-        string description "詳細説明"
-        string status "TODO / DONE"
-        bigint user_id FK "作成者ID"
+        bigint id PK "自動採番 (BIGINT)"
+        string title "NotNull"
+        string description "Nullable"
+        string status "Default: 'TODO' / NotNull"
+        bigint user_id FK "NotNull (外来キー)"
     }
 
 ```
@@ -94,6 +94,8 @@ stateDiagram-v2
 - **Backend:** Spring Securityによる認証機能実装(簡易的にBasic認証)
 - **Frontend:** ユーザー登録、ログイン機能実装　※まだタスクとの関連付けは未実装
 
-### Sprint 5(予定)　ユーザーに応じたタスクの表示
+### Sprint 5
+- **Backend:** ユーザー別にタスクのCRUDを行うように実装
+
 ### Sprint 6(予定)　他ユーザーへのタスクのアサイン
 ### Sprint 7(予定)　タスク期限日の設定
