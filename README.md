@@ -140,3 +140,4 @@ sequenceDiagram
 
 ### Sprint 6(予定)　他ユーザーへのタスクのアサイン
 ### Sprint 7(予定)　タスク期限日の設定
+### Sprint 8(予定)　キャッシュによる処理の高速化(Redis)
