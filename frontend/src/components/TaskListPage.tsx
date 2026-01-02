@@ -13,6 +13,17 @@ export const TaskListPage = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
+
+  // ステータスの表示名マッピング
+  const STATUS_LABELS: Record<string, string> = {
+    TODO: '未着手',
+    ASSIGN_WAITING: 'アサイン待ち',
+    PROGRESS: '対応中',
+    IN_REVIEW: 'レビュー中',
+    DONE: '完了',
+    DELETED: '削除済み'
+  };
+
   const fetchTasks = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/tasks');
@@ -67,7 +78,7 @@ export const TaskListPage = () => {
               <tr key={task.id}>
                 <td>{task.id}</td>
                 <td className={task.status === 'DONE' ? 'strikethrough' : ''}>{task.title}</td>
-                <td>{task.status}</td>
+                <td>{STATUS_LABELS[task.status]}</td>
                 <td>
                   <button onClick={() => handleToggle(task.id)}>
                     {task.status === 'DONE' ? '戻す' : '完了'}

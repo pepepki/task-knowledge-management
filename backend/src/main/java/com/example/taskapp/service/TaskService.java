@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.taskapp.dto.TaskRequest;
 import com.example.taskapp.entity.Task;
 import com.example.taskapp.entity.User;
+import com.example.taskapp.enums.TaskStatus;
 import com.example.taskapp.exception.ResourceNotFoundException;
 import com.example.taskapp.repository.TaskRepository;
 import com.example.taskapp.repository.UserRepository;
@@ -49,7 +50,7 @@ public class TaskService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
         task.setUser(user);
-        task.setStatus("TODO");
+        task.setStatus(TaskStatus.TODO);
         return taskRepository.save(task);
     }
 
@@ -80,7 +81,7 @@ public class TaskService {
     @Transactional
     public void toggleTaskStatus(Long taskId, String username) {
         Task task = getTaskIfOwner(taskId, username);
-        String newStatus = "TODO".equals(task.getStatus()) ? "DONE" : "TODO";
+        TaskStatus newStatus = TaskStatus.TODO.equals(task.getStatus()) ? TaskStatus.DONE : TaskStatus.TODO;
         task.setStatus(newStatus);
         taskRepository.save(task); // リポジトリのsaveを呼ぶ
     }

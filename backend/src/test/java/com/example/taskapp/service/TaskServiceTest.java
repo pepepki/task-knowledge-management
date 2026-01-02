@@ -11,6 +11,7 @@ import org.springframework.security.access.AccessDeniedException;
 
 import com.example.taskapp.entity.Task;
 import com.example.taskapp.entity.User;
+import com.example.taskapp.enums.TaskStatus;
 import com.example.taskapp.repository.TaskRepository;
 import com.example.taskapp.repository.UserRepository;
 
@@ -93,7 +94,7 @@ public class TaskServiceTest {
 
         Task task = new Task();
         task.setId(taskId);
-        task.setStatus("TODO");
+        task.setStatus(TaskStatus.TODO);
         task.setUser(user); // 所有者をセット
 
         when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
@@ -103,7 +104,7 @@ public class TaskServiceTest {
         taskService.toggleTaskStatus(taskId, username);
 
         // Assert
-        assertThat(task.getStatus()).isEqualTo("DONE");
+        assertThat(task.getStatus()).isEqualTo(TaskStatus.DONE);
         verify(taskRepository).save(task);
     }
 
