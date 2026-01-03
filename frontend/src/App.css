@@ -18,20 +18,22 @@ body {
   background: white;
   padding: 40px;
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
   box-sizing: border-box;
 }
 
-.auth-card h1, .auth-card h2 {
+.auth-card h1,
+.auth-card h2 {
   text-align: center;
   margin-bottom: 24px;
 }
 
 .auth-card form {
   display: flex;
-  flex-direction: column; /* ログイン画面は縦並び */
+  flex-direction: column;
+  /* ログイン画面は縦並び */
   gap: 15px;
 }
 
@@ -68,16 +70,64 @@ body {
 
 /* --- タスク一覧画面 (TaskListPage) --- */
 main.task-container {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 30px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  max-width: 1000px;
+  /* 列が増えたので少し広げる */
+  /* ...他の設定はそのまま */
+}
+
+/* 各列の幅を再定義 */
+th:nth-child(1),
+td:nth-child(1) {
+  width: 50px;
+}
+
+/* ID */
+th:nth-child(2),
+td:nth-child(2) {
+  width: auto;
+}
+
+/* タイトル */
+th:nth-child(3),
+td:nth-child(3) {
+  width: 100px;
+}
+
+/* 作成者 */
+th:nth-child(4),
+td:nth-child(4) {
+  width: 100px;
+}
+
+/* 担当者 */
+th:nth-child(5),
+td:nth-child(5) {
+  width: 100px;
+}
+
+/* 状態 */
+th:nth-child(6),
+td:nth-child(6) {
+  width: 140px;
+  text-align: center;
+}
+
+/* 操作 */
+
+/* 担当者名が長い場合に備えて */
+td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* はみ出す場合は「...」にする */
 }
 
 .task-form form {
-  display: flex; /* タスク追加は横並び */
+  display: flex;
+  /* タスク追加は横並び */
   gap: 10px;
   margin: 20px 0;
 }

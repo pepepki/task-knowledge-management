@@ -42,9 +42,9 @@ function App() {
           <Route path="/signup" element={<Signup />} />
 
           {/* 認証済みの場合のみタスク一覧を表示、そうでなければログインへ */}
-          <Route 
-            path="/" 
-            element={authToken ? <TaskListPage /> : <Navigate to="/login" replace />} 
+          <Route
+            path="/"
+            element={authToken ? <TaskListPage /> : <Navigate to="/login" replace />}
           />
 
           {/* 定義外のURLはルートへ飛ばす */}
@@ -55,4 +55,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 
