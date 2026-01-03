@@ -1,12 +1,19 @@
 package com.example.taskapp.entity;
 
+import java.io.Serializable;
+
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
 @Data
-public class User {
+@NoArgsConstructor
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

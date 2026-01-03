@@ -1,7 +1,7 @@
 # Task & Knowledge Management App
 
 Spring Boot 4 のタスク管理およびナレッジ共有プラットフォームです。
-現在は **Sprint 6 (他ユーザーへのタスクのアサイン)** ステップです。
+現在は **Sprint 7 (Redisによるキャッシュ処理の実装)** ステップです。
 
 ## 🛠 利用技術
 ### Backend
@@ -10,6 +10,7 @@ Spring Boot 4 のタスク管理およびナレッジ共有プラットフォー
 - **Gradle 8.x**
 - **Spring Data JPA**
 - **MySQL Driver**
+- **Redis**
 
 ### Frontend
 - **React 18+**
@@ -72,6 +73,7 @@ stateDiagram-v2
 ```
 
 ### シーケンス図
+基本機能
 ```mermaid
 sequenceDiagram
     autonumber
@@ -112,6 +114,29 @@ sequenceDiagram
 
 ```
 
+Redis部分の抜粋
+```mermaid
+sequenceDiagram
+    participant Front as Frontend (React)
+    participant Back as Backend (Spring Boot)
+    participant Redis as Redis (Cache)
+    participant DB as DB (MySQL)
+
+    Front->>Back: GET /api/tasks (タスク取得)
+    Back->>Redis: キャッシュがあるか確認
+    
+    alt キャッシュあり (Cache Hit)
+        Redis-->>Back: タスクリストを返却
+    else キャッシュなし (Cache Miss)
+        Back->>DB: データベースから取得
+        DB-->>Back: タスクリスト
+        Back->>Redis: データを保存 (TTL設定)
+    end
+    
+    Back-->>Front: JSONを返却
+
+```
+
 ## 各サービスへのアクセス
 - Frontend (React): http://localhost:5173
 - Backend API: http://localhost:8080/api/tasks
@@ -144,5 +169,9 @@ sequenceDiagram
 - **Backend:** 担当者の設定、タスク登録後の担当者変更機能実装
 - **Frontend:** 担当者の設定、タスク登録後の担当者変更機能実装
 
-### Sprint 7(予定)　タスク期限日の設定
-### Sprint 8(予定)　キャッシュによる処理の高速化(Redis)
+### Sprint 7
+- **Backend:** Redisによるキャッシュ処理の実装
+
+### Sprint 8(予定)　タスク期限日の設定
+
+### Sprint 9(予定)　個別タスクの詳細画面表示
