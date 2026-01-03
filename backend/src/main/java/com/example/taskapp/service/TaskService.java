@@ -40,7 +40,7 @@ public class TaskService {
      * 
      * @param task
      * @param username
-     * @return
+     * @return タスク
      */
     @Transactional
     public Task createTask(TaskRequest request, String ownerUsername) {
@@ -60,6 +60,32 @@ public class TaskService {
                     .orElseThrow(() -> new ResourceNotFoundException("Assignee not found"));
             task.setAssignee(assignee);
             task.setStatus(TaskStatus.TODO);
+        }
+
+        return taskRepository.save(task);
+    }
+
+    /**
+     * タスクの担当者を更新する。
+     * 
+     * @param taskId
+     * @param assigneeId
+     * @return タスク
+     */
+    @Transactional
+    public Task updateAssignee(Long taskId, Long assigneeId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        if (assigneeId != null) {
+            User assignee = userRepository.findById(assigneeId)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            task.setAssignee(assignee);
+            if (TaskStatus.ASSIGN_WAITING.equals(task.getStatus())) {
+                task.setStatus(TaskStatus.TODO);
+            }
+        } else {
+            task.setAssignee(null); // 担当者解除
         }
 
         return taskRepository.save(task);
@@ -92,7 +118,7 @@ public class TaskService {
     @Transactional
     public void toggleTaskStatus(Long taskId, String username) {
         Task task = getTaskIfOwner(taskId, username);
-        TaskStatus newStatus = TaskStatus.TODO.equals(task.getStatus()) ? TaskStatus.DONE : TaskStatus.TODO;
+        TaskStatus newStatus = TaskStatus.DONE.equals(task.getStatus()) ? TaskStatus.TODO : TaskStatus.DONE;
         task.setStatus(newStatus);
         taskRepository.save(task); // リポジトリのsaveを呼ぶ
     }

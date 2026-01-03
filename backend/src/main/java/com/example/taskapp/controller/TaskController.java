@@ -2,6 +2,7 @@ package com.example.taskapp.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -63,6 +64,19 @@ public class TaskController {
     @PatchMapping("/{id}/toggle")
     public void toggleTask(@PathVariable Long id, Principal principal) {
         taskService.toggleTaskStatus(id, principal.getName());
+    }
+
+    /**
+     * タスクのアサインを変更する
+     * 
+     * @param id
+     * @param payload
+     * @return タスク
+     */
+    @PatchMapping("/{id}/assignee")
+    public Task updateAssignee(@PathVariable Long id, @RequestBody Map<String, Long> payload) {
+        Long assigneeId = payload.get("assigneeId");
+        return taskService.updateAssignee(id, assigneeId);
     }
 
     /**

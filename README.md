@@ -117,7 +117,7 @@ sequenceDiagram
 - Backend API: http://localhost:8080/api/tasks
 - phpMyAdmin (DB管理): http://localhost:8081
 
-## 🚀 プロジェクトの現状: Sprint 5 完了　ユーザー別にタスクのCRUDを行うように実装
+## 🚀 プロジェクトの現状: Sprint 6 完了　他ユーザーへのタスクのアサイン
 ### Sprint 1
 - **インフラ:** Docker Compose による全環境（DB/Backend/Frontend）のコンテナ化
 - **DB:** MySQL 8.0 の構築と初期データの疎通
@@ -140,6 +140,9 @@ sequenceDiagram
 ### Sprint 5
 - **Backend:** ユーザー別にタスクのCRUDを行うように実装
 
-### Sprint 6(途中)　他ユーザーへのタスクのアサイン
+### Sprint 6　他ユーザーへのタスクのアサイン
+- **Backend:** 担当者の設定、タスク登録後の担当者変更機能実装
+- **Frontend:** 担当者の設定、タスク登録後の担当者変更機能実装
+
 ### Sprint 7(予定)　タスク期限日の設定
 ### Sprint 8(予定)　キャッシュによる処理の高速化(Redis)

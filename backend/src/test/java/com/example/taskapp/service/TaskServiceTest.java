@@ -51,16 +51,15 @@ public class TaskServiceTest {
     @DisplayName("ユーザー名指定でタスク一覧が取得できること")
     void getTasksByUsername_ReturnsList() {
         // Arrange
-        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
-        when(taskRepository.findByUser(testUser)).thenReturn(List.of(new Task()));
+        when(taskRepository.findByUserUsernameOrAssigneeUsername("testuser", "testuser"))
+                .thenReturn(List.of(new Task()));
 
         // Act
         List<Task> result = taskService.getTasksByUsername("testuser");
 
         // Assert
         assertThat(result).hasSize(1);
-        verify(userRepository).findByUsername("testuser");
-        verify(taskRepository).findByUser(testUser);
+        verify(taskRepository).findByUserUsernameOrAssigneeUsername("testuser", "testuser");
     }
 
     @Test
@@ -87,7 +86,7 @@ public class TaskServiceTest {
         assertEquals("New Task", result.getTitle());
         assertEquals(owner, result.getUser());
         assertEquals(assignee, result.getAssignee()); // アサインが正しいか
-        assertEquals(TaskStatus.ASSIGN_WAITING, result.getStatus()); // ステータス変更の検証
+        assertEquals(TaskStatus.TODO, result.getStatus()); // ステータス変更の検証
     }
 
     @Test
@@ -177,5 +176,193 @@ public class TaskServiceTest {
         assertThrows(AccessDeniedException.class, () -> {
             taskService.toggleTaskStatus(taskId, "other_user");
         });
+    }
+
+    @Test
+    @DisplayName("担当者なしでタスクを作成できること")
+    void createTask_WithoutAssignee_ShouldSaveTask() {
+        // Given
+        TaskRequest request = new TaskRequest("New Task", "Description", null);
+        User owner = new User();
+        owner.setUsername("ownerUser");
+
+        when(userRepository.findByUsername("ownerUser")).thenReturn(Optional.of(owner));
+        when(taskRepository.save(any(Task.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        // When
+        Task result = taskService.createTask(request, "ownerUser");
+
+        // Then
+        assertNotNull(result);
+        assertEquals("New Task", result.getTitle());
+        assertEquals(owner, result.getUser());
+        assertNull(result.getAssignee());
+        assertEquals(TaskStatus.ASSIGN_WAITING, result.getStatus());
+    }
+
+    @Test
+    @DisplayName("担当者を更新できること")
+    void updateAssignee_ShouldUpdateAssignee() {
+        // Given
+        Long taskId = 1L;
+        Long assigneeId = 2L;
+        User assignee = new User();
+        assignee.setId(assigneeId);
+
+        Task task = new Task();
+        task.setId(taskId);
+        task.setStatus(TaskStatus.ASSIGN_WAITING);
+
+        when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
+        when(userRepository.findById(assigneeId)).thenReturn(Optional.of(assignee));
+        when(taskRepository.save(any(Task.class))).thenReturn(task);
+
+        // When
+        Task result = taskService.updateAssignee(taskId, assigneeId);
+
+        // Then
+        assertEquals(assignee, result.getAssignee());
+        assertEquals(TaskStatus.TODO, result.getStatus());
+        verify(taskRepository).save(task);
+    }
+
+    @Test
+    @DisplayName("担当者を解除できること")
+    void updateAssignee_ShouldRemoveAssignee() {
+        // Given
+        Long taskId = 1L;
+        Task task = new Task();
+        task.setId(taskId);
+        task.setAssignee(testUser);
+
+        when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
+        when(taskRepository.save(any(Task.class))).thenReturn(task);
+
+        // When
+        Task result = taskService.updateAssignee(taskId, null);
+
+        // Then
+        assertNull(result.getAssignee());
+        verify(taskRepository).save(task);
+    }
+
+    @Test
+    @DisplayName("担当者更新時にタスクが見つからない場合に例外が発生すること")
+    void updateAssignee_ThrowsException_WhenTaskNotFound() {
+        // Given
+        when(taskRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(RuntimeException.class, () -> taskService.updateAssignee(1L, 2L));
+    }
+
+    @Test
+    @DisplayName("担当者更新時にユーザーが見つからない場合に例外が発生すること")
+    void updateAssignee_ThrowsException_WhenAssigneeNotFound() {
+        // Given
+        Task task = new Task();
+        task.setId(1L);
+
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
+        when(userRepository.findById(2L)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(RuntimeException.class, () -> taskService.updateAssignee(1L, 2L));
+    }
+
+    @Test
+    @DisplayName("ステータスをDONEからTODOにトグルできること")
+    void toggleTaskStatus_FromDoneToTodo() {
+        // Given
+        Long taskId = 1L;
+        String username = "testuser";
+
+        User user = new User();
+        user.setUsername(username);
+
+        Task task = new Task();
+        task.setId(taskId);
+        task.setStatus(TaskStatus.DONE);
+        task.setUser(user);
+
+        when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
+        when(taskRepository.save(any(Task.class))).thenReturn(task);
+
+        // When
+        taskService.toggleTaskStatus(taskId, username);
+
+        // Then
+        assertEquals(TaskStatus.TODO, task.getStatus());
+        verify(taskRepository).save(task);
+    }
+
+    @Test
+    @DisplayName("他人のタスクを削除しようとした場合、AccessDeniedExceptionが発生すること")
+    void deleteTask_ThrowsException_WhenNotOwner() {
+        // Given
+        Long taskId = 1L;
+        String username = "otheruser";
+
+        User owner = new User();
+        owner.setUsername("testuser");
+
+        Task task = new Task();
+        task.setId(taskId);
+        task.setUser(owner);
+
+        when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
+
+        // When & Then
+        assertThrows(AccessDeniedException.class, () -> taskService.deleteById(taskId, username));
+    }
+
+    @Test
+    @DisplayName("タスクをアサインできること")
+    void assignTask_ShouldAssignTask() {
+        // Given
+        Long taskId = 1L;
+        String assigneeUsername = "assigneeUser";
+
+        User assignee = new User();
+        assignee.setUsername(assigneeUsername);
+
+        Task task = new Task();
+        task.setId(taskId);
+
+        when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
+        when(userRepository.findByUsername(assigneeUsername)).thenReturn(Optional.of(assignee));
+        when(taskRepository.save(any(Task.class))).thenReturn(task);
+
+        // When
+        Task result = taskService.assignTask(taskId, assigneeUsername);
+
+        // Then
+        assertEquals(assignee, result.getAssignee());
+        assertEquals(TaskStatus.PROGRESS, result.getStatus());
+        verify(taskRepository).save(task);
+    }
+
+    @Test
+    @DisplayName("アサイン時にタスクが見つからない場合に例外が発生すること")
+    void assignTask_ThrowsException_WhenTaskNotFound() {
+        // Given
+        when(taskRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(RuntimeException.class, () -> taskService.assignTask(1L, "assignee"));
+    }
+
+    @Test
+    @DisplayName("アサイン時にユーザーが見つからない場合に例外が発生すること")
+    void assignTask_ThrowsException_WhenAssigneeNotFound() {
+        // Given
+        Task task = new Task();
+        task.setId(1L);
+
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
+        when(userRepository.findByUsername("assignee")).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(RuntimeException.class, () -> taskService.assignTask(1L, "assignee"));
     }
 }
