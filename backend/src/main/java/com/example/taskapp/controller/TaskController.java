@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.taskapp.dto.TaskRequest;
 import com.example.taskapp.entity.Task;
-import com.example.taskapp.entity.User;
 import com.example.taskapp.service.TaskService;
 
 import lombok.RequiredArgsConstructor;
@@ -50,8 +49,8 @@ public class TaskController {
      * @return タスク
      */
     @PostMapping
-    public Task createTask(@RequestBody Task task, Principal principal) {
-        return taskService.createTaskWithUsername(task, principal.getName());
+    public Task createTask(@RequestBody TaskRequest request, Principal principal) {
+        return taskService.createTask(request, principal.getName());
     }
 
     /**

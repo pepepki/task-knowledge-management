@@ -1,7 +1,7 @@
 # Task & Knowledge Management App
 
 Spring Boot 4 のタスク管理およびナレッジ共有プラットフォームです。
-現在は **Sprint 5 (ユーザーに応じたタスクの表示)** ステップです。
+現在は **Sprint 6 (他ユーザーへのタスクのアサイン)** ステップです。
 
 ## 🛠 利用技術
 ### Backend
@@ -28,12 +28,13 @@ Spring Boot 4 のタスク管理およびナレッジ共有プラットフォー
   - DB_PASSWORD=パスワード となる`.env` ファイルをプロジェクト直下に作成してください。
 - 各コンテナの設定は `docker-compose.yml` を通じて `.env` から注入されます。
 
-## 📊 設計図 (Sprint 5 時点)
+## 📊 設計図 (Sprint 6 時点)
 
 ### ER図
 ```mermaid
 erDiagram
-    USER ||--o{ TASK : "manages"
+    USER ||--o{ TASK : "owns (作成者)"
+    USER ||--o{ TASK : "is assigned to (担当者)"
     
     USER {
         bigint id PK "自動採番 (BIGINT)"
@@ -45,8 +46,9 @@ erDiagram
         bigint id PK "自動採番 (BIGINT)"
         string title "NotNull"
         string description "Nullable"
-        string status "Default: 'TODO' / NotNull"
-        bigint user_id FK "NotNull (外来キー)"
+        string status "TODO/ASSIGN_WAITING/PROGRESS/IN_REVIEW/DONE"
+        bigint user_id FK "作成者 (Owner)"
+        igint assignee_id FK "担当者 (Assignee) - Nullable"
     }
 
 ```
@@ -138,6 +140,6 @@ sequenceDiagram
 ### Sprint 5
 - **Backend:** ユーザー別にタスクのCRUDを行うように実装
 
-### Sprint 6(予定)　他ユーザーへのタスクのアサイン
+### Sprint 6(途中)　他ユーザーへのタスクのアサイン
 ### Sprint 7(予定)　タスク期限日の設定
 ### Sprint 8(予定)　キャッシュによる処理の高速化(Redis)

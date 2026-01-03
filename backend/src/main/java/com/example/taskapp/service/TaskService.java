@@ -2,7 +2,6 @@ package com.example.taskapp.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,9 +32,7 @@ public class TaskService {
      */
     @Transactional(readOnly = true)
     public List<Task> getTasksByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
-        return taskRepository.findByUser(user);
+        return taskRepository.findByUserUsernameOrAssigneeUsername(username, username);
     }
 
     /**
@@ -46,11 +43,25 @@ public class TaskService {
      * @return
      */
     @Transactional
-    public Task createTaskWithUsername(Task task, String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
-        task.setUser(user);
-        task.setStatus(TaskStatus.TODO);
+    public Task createTask(TaskRequest request, String ownerUsername) {
+        // 1. 作成者（Owner）を取得
+        User owner = userRepository.findByUsername(ownerUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("Owner not found"));
+
+        Task task = new Task();
+        task.setTitle(request.title());
+        task.setDescription(request.description());
+        task.setUser(owner);
+        task.setStatus(TaskStatus.ASSIGN_WAITING);
+
+        // 2. 担当者（Assignee）が指定されていればセット
+        if (request.assigneeId() != null) {
+            User assignee = userRepository.findById(request.assigneeId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Assignee not found"));
+            task.setAssignee(assignee);
+            task.setStatus(TaskStatus.TODO);
+        }
+
         return taskRepository.save(task);
     }
 
@@ -95,5 +106,25 @@ public class TaskService {
     public void deleteById(Long taskId, String username) {
         getTaskIfOwner(taskId, username);
         taskRepository.deleteById(taskId);
+    }
+
+    /**
+     * タスクをアサインする
+     * 
+     * @param taskId
+     * @param assigneeUsername
+     * @return タスク
+     */
+    @Transactional
+    public Task assignTask(Long taskId, String assigneeUsername) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        User assignee = userRepository.findByUsername(assigneeUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        task.setAssignee(assignee);
+        task.setStatus(TaskStatus.PROGRESS);
+        return taskRepository.save(task);
     }
 }

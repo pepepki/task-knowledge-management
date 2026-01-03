@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.access.AccessDeniedException;
 
+import com.example.taskapp.dto.TaskRequest;
 import com.example.taskapp.entity.Task;
 import com.example.taskapp.entity.User;
 import com.example.taskapp.enums.TaskStatus;
@@ -63,22 +64,30 @@ public class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("タスク作成時にユーザーが正しく紐付けられること")
-    void createTaskWithUsername_SavesTaskWithUser() {
-        // Arrange
-        Task inputTask = new Task();
-        inputTask.setTitle("New Task");
+    void createTask_WithAssignee_ShouldSaveTask() {
+        // 1. 準備 (Given)
+        TaskRequest request = new TaskRequest("New Task", "", 2L);
 
-        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
+        User owner = new User();
+        owner.setUsername("ownerUser");
+
+        User assignee = new User();
+        assignee.setId(2L);
+        assignee.setUsername("assigneeUser");
+
+        when(userRepository.findByUsername("ownerUser")).thenReturn(Optional.of(owner));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(assignee));
         when(taskRepository.save(any(Task.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        // Act
-        Task savedTask = taskService.createTaskWithUsername(inputTask, "testuser");
+        // 2. 実行 (When)
+        Task result = taskService.createTask(request, "ownerUser");
 
-        // Assert
-        assertThat(savedTask.getUser()).isEqualTo(testUser); // ユーザーがセットされているか
-        assertThat(savedTask.getTitle()).isEqualTo("New Task");
-        verify(taskRepository).save(any(Task.class));
+        // 3. 検証 (Then)
+        assertNotNull(result);
+        assertEquals("New Task", result.getTitle());
+        assertEquals(owner, result.getUser());
+        assertEquals(assignee, result.getAssignee()); // アサインが正しいか
+        assertEquals(TaskStatus.ASSIGN_WAITING, result.getStatus()); // ステータス変更の検証
     }
 
     @Test

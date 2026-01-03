@@ -11,4 +11,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     // ユーザーに基づいてタスクをフィルタリングするメソッド
     List<Task> findByUser(User user);
+
+    // 作成者が自分、または担当者が自分であるタスクを取得
+    List<Task> findByUserUsernameOrAssigneeUsername(String ownerUsername, String assigneeUsername);
+
 }

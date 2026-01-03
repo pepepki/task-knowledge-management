@@ -16,7 +16,7 @@ export const Login = (props: LoginProps) => {
         try {
             const authHeader = 'Basic ' + btoa(`${username}:${password}`);
 
-            const response = await axios.get('http://localhost:8080/api/user/me', {
+            const response = await axios.get('http://localhost:8080/api/users/me', {
                 headers: { Authorization: authHeader }
             });
 
