@@ -142,7 +142,7 @@ sequenceDiagram
 - Backend API: http://localhost:8080/api/tasks
 - phpMyAdmin (DB管理): http://localhost:8081
 
-## 🚀 プロジェクトの現状: Sprint 6 完了　他ユーザーへのタスクのアサイン
+## 🚀 プロジェクトの現状: Sprint 7 完了　Redisによるキャッシュ処理の実装
 ### Sprint 1
 - **インフラ:** Docker Compose による全環境（DB/Backend/Frontend）のコンテナ化
 - **DB:** MySQL 8.0 の構築と初期データの疎通
