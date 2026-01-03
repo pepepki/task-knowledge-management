@@ -35,6 +35,16 @@ export const TaskListPage = () => {
     DELETED: '削除済み'
   };
 
+  const [notification, setNotification] = useState<string | null>(null);
+
+  // 通知を表示して3秒後に消す関数
+  const showNotify = (message: string) => {
+    setNotification(message);
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000); // 3秒で消去
+  };
+
   const fetchTasks = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/tasks');
@@ -97,6 +107,16 @@ export const TaskListPage = () => {
     fetchTasks();
   };
 
+  const handleAssigneeChange = async (taskId: number, newAssigneeId: number | null) => {
+    try {
+      await axios.patch(`http://localhost:8080/api/tasks/${taskId}/assignee`, { assigneeId: newAssigneeId });
+      fetchTasks(); // 一覧を再取得して表示を更新
+      showNotify("担当者を更新しました");
+    } catch (error) {
+      console.error("アサイン変更に失敗しました", error);
+      alert("アサインの変更権限がないか、エラーが発生しました");
+    }
+  };
 
   return (
     <main>
@@ -109,7 +129,7 @@ export const TaskListPage = () => {
             value={assigneeId}
             onChange={(e) => setAssigneeId(e.target.value ? Number(e.target.value) : "")}
           >
-            <option value="">選択してください</option>
+            <option value="">担当者なし</option>
             {Array.isArray(users) && users.map(u => (
               <option key={u.id} value={u.id}>{u.username}</option>
             ))}
@@ -143,7 +163,17 @@ export const TaskListPage = () => {
                   {task.description}
                 </td>
                 <td>{task.user?.username}</td>
-                <td>{task.assignee?.username || '-'}</td>
+                <td>
+                  <select
+                    value={task.assignee?.id || ""}
+                    onChange={(e) => handleAssigneeChange(task.id, e.target.value ? Number(e.target.value) : null)}
+                  >
+                    <option value="">担当者なし</option>
+                    {users.map(u => (
+                      <option key={u.id} value={u.id}>{u.username}</option>
+                    ))}
+                  </select>
+                </td>
                 <td>
                   <span className={`status-badge ${task.status.toLowerCase()}`}>
                     {STATUS_LABELS[task.status]}
@@ -161,6 +191,11 @@ export const TaskListPage = () => {
             ))}
           </tbody>
         </table>
+        {notification && (
+          <div className="toast-notification">
+            {notification}
+          </div>
+        )}
       </section>
     </main>
   );
