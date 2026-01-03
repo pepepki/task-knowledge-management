@@ -2,6 +2,8 @@ package com.example.taskapp.service;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,7 @@ public class TaskService {
      * @param username
      * @return タスクの全リスト
      */
+    @Cacheable(value = "tasks", key = "#username")
     @Transactional(readOnly = true)
     public List<Task> getTasksByUsername(String username) {
         return taskRepository.findByUserUsernameOrAssigneeUsername(username, username);
@@ -42,6 +45,7 @@ public class TaskService {
      * @param username
      * @return タスク
      */
+    @CacheEvict(value = "tasks", allEntries = true)
     @Transactional
     public Task createTask(TaskRequest request, String ownerUsername) {
         // 1. 作成者（Owner）を取得
@@ -72,6 +76,7 @@ public class TaskService {
      * @param assigneeId
      * @return タスク
      */
+    @CacheEvict(value = "tasks", allEntries = true)
     @Transactional
     public Task updateAssignee(Long taskId, Long assigneeId) {
         Task task = taskRepository.findById(taskId)
@@ -115,6 +120,7 @@ public class TaskService {
      * @param id
      * @return 更新したタスク
      */
+    @CacheEvict(value = "tasks", allEntries = true)
     @Transactional
     public void toggleTaskStatus(Long taskId, String username) {
         Task task = getTaskIfOwner(taskId, username);
@@ -124,10 +130,11 @@ public class TaskService {
     }
 
     /**
-     * ステータスを削除する
+     * タスクを削除する
      * 
      * @param id
      */
+    @CacheEvict(value = "tasks", allEntries = true)
     @Transactional
     public void deleteById(Long taskId, String username) {
         getTaskIfOwner(taskId, username);
@@ -141,6 +148,7 @@ public class TaskService {
      * @param assigneeUsername
      * @return タスク
      */
+    @CacheEvict(value = "tasks", allEntries = true)
     @Transactional
     public Task assignTask(Long taskId, String assigneeUsername) {
         Task task = taskRepository.findById(taskId)

@@ -8,18 +8,24 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: task_db
-      MYSQL_ROOT_PASSWORD:  ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_USER: user
       MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
       - ./mysql_data:/var/lib/mysql
-    healthcheck: # 
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+    healthcheck:
+      #
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword" ]
       interval: 5s
       timeout: 5s
       retries: 5
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    restart: always
 
   # phpMyAdmin
   phpmyadmin:
@@ -40,10 +46,14 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/task_db?allowPublicKeyRetrieval=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD} 
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
     ports:
       - "8080:8080"
     depends_on:
+      redis:
+        condition: service_started
       db:
         condition: service_healthy
 
@@ -53,7 +63,7 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - ./frontend:/app         # ローカルでの編集をリアルタイムに反映（ホットリロード）
-      - /app/node_modules        # コンテナ内のライブラリを優先
+      - ./frontend:/app # ローカルでの編集をリアルタイムに反映（ホットリロード）
+      - /app/node_modules # コンテナ内のライブラリを優先
     depends_on:
       - backend
