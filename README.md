@@ -29,7 +29,7 @@ Spring Boot 4 のタスク管理およびナレッジ共有プラットフォー
   - DB_PASSWORD=パスワード となる`.env` ファイルをプロジェクト直下に作成してください。
 - 各コンテナの設定は `docker-compose.yml` を通じて `.env` から注入されます。
 
-## 📊 設計図 (Sprint 6 時点)
+## 📊 設計図
 
 ### ER図
 ```mermaid
