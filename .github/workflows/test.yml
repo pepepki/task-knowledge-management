@@ -36,6 +36,7 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
+        working-directory: backend
 
       - name: Upload Test Report
         if: failure()
